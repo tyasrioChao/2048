@@ -7,20 +7,72 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>2048</title>
     <style>
+        /**
+         * 65536 #fe1e1e #f5f5f5
+         * 32768 #fe1e1e #f5f5f5
+         * 16384 #fe1e1e #f5f5f5
+         *  8192 #fe1e1e #f5f5f5
+         *  4096 #ff3b3d #f5f5f5
+         *  2048 #ecc400 #f5f5f5
+         *  1024 #edc542 #f5f5f5
+         *   512 #ecc850 #f5f5f5
+         *   256 #edcc61 #f5f5f5
+         *   128 #efcd74 #f5f5f5
+         *    64 #fa5c3f #f5f5f5
+         *    32 #f47c5a #f5f5f5
+         *    16 #f59563 #f5f5f5
+         *     8 #f2b179 #f5f5f5
+         *     4 #ece0c8 #786e65
+         *     2 #eee4da #766d64
+         */
         .panel {
             display: flex;
             flex-flow: row wrap;
-            width: 300px;
-            height: 300px;
-            border: 1px solid #000;
+            width: 360px;
+            height: 360px;
             padding: 15px;
+            background-color: #bbada0;
         }
         .cell {
+            box-sizing: border-box;
             width: 80px;
             height: 80px;
+            line-height: 80px;
             border-radius: 5px;
-            border: 1px solid #000;
             margin: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #ccc0b2;
+        }
+
+        .val-2 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-4 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-8 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-16 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-32 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-64 {
+            background-color: #eee4da;
+            color: #766d64
+        }
+        .val-128 {
+            background-color: #eee4da;
+            color: #766d64
         }
 
     </style>
@@ -31,12 +83,19 @@
         <div class="cell r1 c1"></div>
         <div class="cell r1 c2"></div>
         <div class="cell r1 c3"></div>
+        <div class="cell r1 c4"></div>
         <div class="cell r2 c1"></div>
         <div class="cell r2 c2"></div>
         <div class="cell r2 c3"></div>
+        <div class="cell r2 c4"></div>
         <div class="cell r3 c1"></div>
         <div class="cell r3 c2"></div>
         <div class="cell r3 c3"></div>
+        <div class="cell r3 c4"></div>
+        <div class="cell r4 c1"></div>
+        <div class="cell r4 c2"></div>
+        <div class="cell r4 c3"></div>
+        <div class="cell r4 c4"></div>
     </div>
 </body>
 <script>
@@ -45,6 +104,7 @@
         this.value = 0;
     }
     function GamePanel() {
+        dom_panel = document.querySelector('.panel')
         this.arr = [];
         this.size = 0;
         this.GAMEOVERFLAG = false
@@ -122,7 +182,7 @@
             })
 
             this.print()
-
+            this.paint()
             return panelArr
         }
 
@@ -153,6 +213,14 @@
             console.log(printStr)
         }
 
+        this.paint = function () {
+            dom_panel.querySelectorAll('.cell').forEach((node, idx) => {
+                node.classList.remove('val-' + node.innerHTML)
+                node.classList.add('val-' + this.arr[idx]['value'])
+                node.innerHTML = this.arr[idx]['value'] ? this.arr[idx]['value'] : ''
+            });
+        }
+
         this.judge = function () {
             if (this.arr.length == this.arr.filter(ele => ele.status).length) {
                 let tempArr = this.arr.slice(0)
@@ -176,10 +244,10 @@
         this.test = function () {
             this.init(4)
             this.randGenerate(10)
-            this.print()
-            this.keyup()
-            this.keyleft()
-            this.keydown()
+            this.paint()
+            // this.keyup()
+            // this.keyleft()
+            // this.keydown()
         }
 
         return this;
@@ -189,10 +257,22 @@
         var keycode = event.which || event.keyCode;
         switch (keycode) {
 
-            case 37: panel.keyleft
-            case 38: panel.keyup
-            case 39: panel.keyright
-            case 40: panel.keydown
+            case 37: 
+                console.log('left')
+                panel.keyleft();
+                break;
+            case 38: 
+                console.log('up')
+                panel.keyup()
+                break;
+            case 39: 
+                console.log('right')
+                panel.keyright()
+                break;
+            case 40: 
+                console.log('down')
+                panel.keydown()
+                break;
         }  
     }
 </script>
