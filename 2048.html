@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2048</title>
+    <style>
+        .panel {
+            display: flex;
+            flex-flow: row wrap;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #000;
+            padding: 15px;
+        }
+        .cell {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            border: 1px solid #000;
+            margin: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="panel">
+        <div class="cell r1 c1"></div>
+        <div class="cell r1 c2"></div>
+        <div class="cell r1 c3"></div>
+        <div class="cell r2 c1"></div>
+        <div class="cell r2 c2"></div>
+        <div class="cell r2 c3"></div>
+        <div class="cell r3 c1"></div>
+        <div class="cell r3 c2"></div>
+        <div class="cell r3 c3"></div>
+    </div>
+</body>
+<script>
+    function Node() {
+        this.status = false;
+        this.value = 0;
+    }
+    function GamePanel() {
+        this.arr = [];
+        this.size = 0;
+        this.GAMEOVERFLAG = false
+        this.downSide = [
+            [12, 8, 4, 0],
+            [13, 9, 5, 1],
+            [14, 10, 6, 2],
+            [15, 11, 7, 3]
+        ]
+        this.upSide = this.downSide.map(ele => ele.concat([]).reverse())
+        this.leftSide = [
+            [0, 1, 2, 3],
+            [4, 5, 6, 7],
+            [8, 9, 10, 11],
+            [12, 13, 14, 15]
+        ]
+        this.rightSide = this.leftSide.map(ele => ele.concat([]).reverse())
+
+        this.init = function (size) {
+            if (this.arr.length !== 0)
+                this.arr = []
+
+            for (let index = 0; index < size ** 2; index++) {
+                this.arr.push({
+                    status: false,
+                    value: 0
+                })
+            }
+
+            this.size = size
+        }
+
+        this.randGenerate = function (pieces) {
+            // console.time('generate pieces')
+            let cPieces = 0;
+            while (cPieces++ < pieces) {
+                let leftPieces = this.arr.map((ele, idx) => !ele.status ? idx : -1).filter(ele => ~ele)
+                let rand = Math.floor(Math.random() * Math.floor(leftPieces.length - 1));
+                this.arr[leftPieces[rand]]['status'] = true
+                this.arr[leftPieces[rand]]['value'] = Math.random() < 0.8 ? 2 : 4
+            }
+            // console.timeEnd('generate pieces')
+        }
+
+        this.combine = function (arr) {
+            let farr = arr.filter(ele => ele),
+                res = []
+            if (farr.length < 2) {
+                res = farr
+            } else {
+                for (let i = 0; i <= farr.length - 1; i++) {
+                    if (farr[i] == farr[i + 1]) {
+                        res.push(farr[i] + farr[i + 1])
+                        i++
+                    } else {
+                        res.push(farr[i])
+                    }
+                }
+            }
+
+            return res.concat([0, 0, 0, 0]).slice(0, 4);
+        }
+
+        this.keyEvent = function (sideArr, panelArr) {
+            sideArr.forEach(ele => {
+                let temp = []
+                ele.forEach(idx => {
+                    temp.push(panelArr[idx]['value'])
+                })
+                temp = this.combine(temp)
+                ele.forEach((idx, index) => {
+                    panelArr[idx]['status'] = !!temp[index]
+                    panelArr[idx]['value'] = ~~temp[index]
+                })
+            })
+
+            this.print()
+
+            return panelArr
+        }
+
+        this.keyup = function () {
+            this.arr = this.keyEvent(this.upSide, this.arr)
+        }
+
+        this.keyright = function () {
+            this.arr = this.keyEvent(this.rightSide, this.arr)
+        }
+
+        this.keydown = function () {
+            this.arr = this.keyEvent(this.downSide, this.arr)
+        }
+
+        this.keyleft = function () {
+            this.arr = this.keyEvent(this.leftSide, this.arr)
+        }
+
+        this.print = function () {
+            let printStr = ''
+            for (let i = 0; i < this.size; i++) {
+                for (let j = 0; j < this.size; j++) {
+                    printStr += this.arr[i * this.size + j]['value'] + ' '
+                }
+                printStr += '\r\n'
+            }
+            console.log(printStr)
+        }
+
+        this.judge = function () {
+            if (this.arr.length == this.arr.filter(ele => ele.status).length) {
+                let tempArr = this.arr.slice(0)
+                if (
+                    this.keyEvent(this.upSide, tempArr).map(ele => ele.value).join(",")
+                    === this.keyEvent(this.rightSide, tempArr).map(ele => ele.value).join(",")
+                    === this.keyEvent(this.downSide, tempArr).map(ele => ele.value).join(",")
+                    === this.keyEvent(this.leftSide, tempArr).map(ele => ele.value).join(",")
+                )
+                    this.GAMEOVERFLAG = true;
+            }
+
+            if (this.GAMEOVERFLAG) {
+                if (confirm('Game Over!\r\nDo you want to restart?')) {
+                    this.test();
+                }
+            }
+
+        }
+
+        this.test = function () {
+            this.init(4)
+            this.randGenerate(10)
+            this.print()
+            this.keyup()
+            this.keyleft()
+            this.keydown()
+        }
+
+        return this;
+    }
+    window.panel = new GamePanel();
+    document.onkeyup = function () {
+        var keycode = event.which || event.keyCode;
+        switch (keycode) {
+
+            case 37: panel.keyleft
+            case 38: panel.keyup
+            case 39: panel.keyright
+            case 40: panel.keydown
+        }  
+    }
+</script>
+
+</html>
