@@ -44,6 +44,7 @@
             font-weight: bold;
             text-align: center;
             background-color: #ccc0b2;
+            transition: all 0.3s ease;
         }
 
         .val-2 {
@@ -51,30 +52,53 @@
             color: #766d64
         }
         .val-4 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #ece0c8;
+            color: #786e65
         }
         .val-8 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #f2b179;
+            color: #f5f5f5
         }
         .val-16 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #f59563;
+            color: #f5f5f5
         }
         .val-32 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #f47c5a;
+            color: #f5f5f5
         }
         .val-64 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #fa5c3f;
+            color: #f5f5f5
         }
         .val-128 {
-            background-color: #eee4da;
-            color: #766d64
+            background-color: #efcd74;
+            color: #f5f5f5
         }
-
+        .val-256 {
+            background-color: #edcc61;
+            color: #f5f5f5
+        }
+        .val-512 {
+            background-color: #ecc850;
+            color: #f5f5f5
+        }
+        .val-1024 {
+            background-color: #edc542;
+            color: #f5f5f5
+        }
+        .val-2048 {
+            background-color: #ecc400;
+            color: #f5f5f5
+        }
+        .val-4096 {
+            background-color: #ff3b3d;
+            color: #f5f5f5
+        }
+        .val-8192, .val-16384, .val-32768, .val-65536 {
+            background-color: #fe1e1e;
+            color: #f5f5f5
+        }
     </style>
 </head>
 
@@ -168,7 +192,7 @@
             return res.concat([0, 0, 0, 0]).slice(0, 4);
         }
 
-        this.keyEvent = function (sideArr, panelArr) {
+        this.move = function (sideArr, panelArr) {
             sideArr.forEach(ele => {
                 let temp = []
                 ele.forEach(idx => {
@@ -180,26 +204,30 @@
                     panelArr[idx]['value'] = ~~temp[index]
                 })
             })
-
-            this.print()
-            this.paint()
             return panelArr
         }
 
+        this.keyEvent = function (sideArr) {
+            this.arr = this.move(sideArr, this.arr)
+            this.judge()
+            this.print()
+            this.paint()
+        }
+
         this.keyup = function () {
-            this.arr = this.keyEvent(this.upSide, this.arr)
+            this.keyEvent(this.upSide)
         }
 
         this.keyright = function () {
-            this.arr = this.keyEvent(this.rightSide, this.arr)
+            this.keyEvent(this.rightSide)
         }
 
         this.keydown = function () {
-            this.arr = this.keyEvent(this.downSide, this.arr)
+            this.keyEvent(this.downSide)
         }
 
         this.keyleft = function () {
-            this.arr = this.keyEvent(this.leftSide, this.arr)
+            this.keyEvent(this.leftSide)
         }
 
         this.print = function () {
@@ -225,10 +253,15 @@
             if (this.arr.length == this.arr.filter(ele => ele.status).length) {
                 let tempArr = this.arr.slice(0)
                 if (
-                    this.keyEvent(this.upSide, tempArr).map(ele => ele.value).join(",")
-                    === this.keyEvent(this.rightSide, tempArr).map(ele => ele.value).join(",")
-                    === this.keyEvent(this.downSide, tempArr).map(ele => ele.value).join(",")
-                    === this.keyEvent(this.leftSide, tempArr).map(ele => ele.value).join(",")
+                    (   this.move(this.upSide, tempArr).map(ele => ele.value).join(",")
+                    === this.move(this.rightSide, tempArr).map(ele => ele.value).join(","))
+                    && 
+                    (   this.move(this.rightSide, tempArr).map(ele => ele.value).join(",")
+                    === this.move(this.downSide, tempArr).map(ele => ele.value).join(","))
+                    &&
+                    (
+                        this.move(this.downSide, tempArr).map(ele => ele.value).join(",")
+                    === this.move(this.leftSide, tempArr).map(ele => ele.value).join(","))
                 )
                     this.GAMEOVERFLAG = true;
             }
@@ -237,6 +270,8 @@
                 if (confirm('Game Over!\r\nDo you want to restart?')) {
                     this.test();
                 }
+            } else {
+                this.randGenerate(2)
             }
 
         }
