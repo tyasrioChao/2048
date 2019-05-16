@@ -166,7 +166,8 @@
             let cPieces = 0;
             while (cPieces++ < pieces) {
                 let leftPieces = this.arr.map((ele, idx) => !ele.status ? idx : -1).filter(ele => ~ele)
-                let rand = Math.floor(Math.random() * Math.floor(leftPieces.length - 1));
+                if(leftPieces.length === 0) continue
+                let rand = Math.floor(Math.random() * Math.floor(leftPieces.length));
                 this.arr[leftPieces[rand]]['status'] = true
                 this.arr[leftPieces[rand]]['value'] = Math.random() < 0.8 ? 2 : 4
             }
