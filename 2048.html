@@ -7,24 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>2048</title>
     <style>
-        /**
-         * 65536 #fe1e1e #f5f5f5
-         * 32768 #fe1e1e #f5f5f5
-         * 16384 #fe1e1e #f5f5f5
-         *  8192 #fe1e1e #f5f5f5
-         *  4096 #ff3b3d #f5f5f5
-         *  2048 #ecc400 #f5f5f5
-         *  1024 #edc542 #f5f5f5
-         *   512 #ecc850 #f5f5f5
-         *   256 #edcc61 #f5f5f5
-         *   128 #efcd74 #f5f5f5
-         *    64 #fa5c3f #f5f5f5
-         *    32 #f47c5a #f5f5f5
-         *    16 #f59563 #f5f5f5
-         *     8 #f2b179 #f5f5f5
-         *     4 #ece0c8 #786e65
-         *     2 #eee4da #766d64
-         */
         .panel {
             display: flex;
             flex-flow: row wrap;
@@ -40,7 +22,7 @@
             line-height: 80px;
             border-radius: 5px;
             margin: 5px;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             text-align: center;
             background-color: #ccc0b2;
@@ -96,9 +78,59 @@
             color: #f5f5f5
         }
         .val-8192, .val-16384, .val-32768, .val-65536 {
+            font-size: 20px;
             background-color: #fe1e1e;
             color: #f5f5f5
         }
+
+        .move-right-1 {
+            transform: translate(90px, 0px);
+        }
+
+        .move-right-2 {
+            transform: translate(180px, 0px);
+        }
+
+        .move-right-3 {
+            transform: translate(270px, 0px);
+        }
+
+        .move-left-1 {
+            transform: translate(-90px, 0px);
+        }
+
+        .move-left-2 {
+            transform: translate(-180px, 0px);
+        }
+
+        .move-left-3 {
+            transform: translate(-270px, 0px);
+        }
+        
+        .move-down-1 {
+            transform: translate(0px, 90px);
+        }
+
+        .move-down-2 {
+            transform: translate(0px, 180px);
+        }
+
+        .move-down-3 {
+            transform: translate(0px, 270px);
+        }
+
+        .move-up-1 {
+            transform: translate(0px, -90px);
+        }
+
+        .move-up-2 {
+            transform: translate(0px, -180px);
+        }
+
+        .move-up-3 {
+            transform: translate(0px, -270px);
+        }
+
     </style>
 </head>
 
